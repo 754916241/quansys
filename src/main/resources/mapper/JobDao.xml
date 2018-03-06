@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wyj.quansystem.dao.JobDao">
+    <select id="queryAllJob" resultType="com.wyj.quansystem.bean.JobBean">
+        select * from job j order by j.jobUpdateTime Desc;
+    </select>
+
+    <select id="queryJobById" resultType="com.wyj.quansystem.bean.JobBean">
+        select * from job where id=#{id};
+    </select>
+
+    <insert id="insertJob" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.wyj.quansystem.bean.JobBean">
+        insert into job(jobName, jobCatagory, jobCity, jobInducement, jobDescription, jobAddress, jobProperty
+            ,jobDegree, jobEmail, jobExperience, jobPeopleNumber, jobLowSalary, jobHighSalary, jobUpdateTime, jobApplyNum)
+            values (#{jobName}, #{jobCatagory}, #{jobCity}, #{jobInducement}, #{jobDescription}, #{jobAddress}, #{jobProperty}
+            ,#{jobDegree}, #{jobEmail}, #{jobExperience}, #{jobPeopleNumber}, #{jobLowSalary},#{jobHighSalary}, #{jobUpdateTime}, 0)
+    </insert>
+
+    <update id="updateJob" parameterType="com.wyj.quansystem.bean.JobBean">
+        update job
+        <set>
+            <if test="jobName!=null">jobName=#{jobName}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteJob">
+        delete from job where id = #{id}
+    </delete>
+</mapper>
