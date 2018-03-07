@@ -8,5 +8,9 @@ public interface JobService {
 
     boolean insertJob(JobBean job);
 
-    List<JobBean> getJobList();
+    List<JobBean> getJobList(int status);
+
+    boolean updateJobStatus(int jobId, int jobStatus);
+
+    JobBean getJobDetail(int jobId);
 }

@@ -22,6 +22,7 @@ public class JobBean {
     private String jobExperience;
     private int jobAppluNum;
     private String jobUpdateTime;
+    private int jobStatus;
 
     public int getJobAppluNum() {
         return jobAppluNum;
@@ -37,6 +38,14 @@ public class JobBean {
 
     public void setJobUpdateTime(String jobUpdateTime) {
         this.jobUpdateTime = jobUpdateTime;
+    }
+
+    public int getJobStatus() {
+        return jobStatus;
+    }
+
+    public void setJobStatus(int jobStatus) {
+        this.jobStatus = jobStatus;
     }
 
     public int getId() {

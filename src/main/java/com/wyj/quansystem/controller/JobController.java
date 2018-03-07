@@ -38,10 +38,36 @@ public class JobController {
     }
 
     @RequestMapping(value="getJob", method = RequestMethod.GET)
-    public Map<String, Object> getJobList(){
+    public Map<String, Object> getJobList(int jobStatus){
         Map<String, Object> resultMap = new HashMap<>();
-        List<JobBean> jobList = jobService.getJobList();
+        List<JobBean> jobList = jobService.getJobList(jobStatus);
         resultMap.put("jobData", jobList);
         return resultMap;
     }
+
+    @RequestMapping(value="getJobDetail", method = RequestMethod.GET)
+    public Map<String, Object> getJobDetail(int id){
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            JobBean JobBean = jobService.getJobDetail(id);
+            resultMap.put("job", JobBean);
+            resultMap.put("status", 200);
+        } catch (Exception e) {
+            resultMap.put("status", 400);
+        }
+        return resultMap;
+    }
+
+    @RequestMapping(value="changeJobStatus", method = RequestMethod.POST)
+    public Map<String, Object> changeJobStatus(@RequestBody JobBean job){
+        Map<String, Object> resultMap = new HashMap<>();
+        int status = job.getJobStatus();
+        if(jobService.updateJobStatus(job.getId(), status)){
+            resultMap.put("status", 200);
+        }else{
+            resultMap.put("status", 400);
+        }
+        return resultMap;
+    }
+
 }

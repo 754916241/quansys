@@ -31,8 +31,21 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobBean> getJobList() {
+    public List<JobBean> getJobList(int status) {
         //for(jobDao)
-        return jobDao.queryAllJob();
+        return jobDao.queryAllJob(status);
+    }
+
+
+
+    @Override
+    public boolean updateJobStatus(int jobId, int jobStatus) {
+        int num = jobDao.updateJobStatus(jobId, jobStatus);
+        return num > 0;
+    }
+
+    @Override
+    public JobBean getJobDetail(int jobId) {
+        return jobDao.queryJobById(jobId);
     }
 }

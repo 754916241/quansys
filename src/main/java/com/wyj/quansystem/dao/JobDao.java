@@ -7,9 +7,9 @@ import java.util.List;
 public interface JobDao {
 
     /**
-     * 查询出所有发布的工作职位
+     * 查询出同一个状态的工作职位
      */
-    List<JobBean> queryAllJob();
+    List<JobBean> queryAllJob(int status);
 
     /**
      * 根据id查询工作职位
@@ -34,4 +34,5 @@ public interface JobDao {
     /**
      * 根据id修改状态
      */
+    int updateJobStatus(int jobId, int jobStatus);
 }
