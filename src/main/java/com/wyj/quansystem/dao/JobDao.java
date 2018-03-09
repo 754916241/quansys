@@ -34,5 +34,5 @@ public interface JobDao {
     /**
      * 根据id修改状态
      */
-    int updateJobStatus(int jobId, int jobStatus);
+    int updateJobStatus(int jobId, int jobStatus, String jobUpdateTime);
 }

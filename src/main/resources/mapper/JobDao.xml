@@ -28,7 +28,7 @@
     </update>
 
     <update id="updateJobStatus">
-        update job set jobStatus = #{arg1} where id = #{arg0}
+        update job set jobStatus = #{arg1}, jobUpdateTime = #{arg2} where id = #{arg0}
     </update>
 
     <delete id="deleteJob">

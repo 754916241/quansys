@@ -40,7 +40,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public boolean updateJobStatus(int jobId, int jobStatus) {
-        int num = jobDao.updateJobStatus(jobId, jobStatus);
+        int num = jobDao.updateJobStatus(jobId, jobStatus, Utils.date2Str(new Date()));
         return num > 0;
     }
 
