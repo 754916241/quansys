@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- ?????? -->
 <mapper namespace="com.wyj.quansystem.dao.JobDao">
     <select id="queryAllJob" resultType="com.wyj.quansystem.bean.JobBean">
         select * from job j where jobStatus = #{jobStatus} order by j.jobUpdateTime Desc;
@@ -22,7 +23,7 @@
     <update id="updateJob" parameterType="com.wyj.quansystem.bean.JobBean">
         update job
         <set>
-            <if test="jobName!=null">jobName=#{jobName}</if>
+            <if test="jobName!=null">jobName=#{jobName},</if>
         </set>
         where id = #{id}
     </update>
