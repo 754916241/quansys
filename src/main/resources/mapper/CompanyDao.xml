@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.wyj.quansystem.dao.CompanyDao">
+    
+    <resultMap id="cvAndInterview" type="com.wyj.quansystem.bean.CompanyBean">
+        <id property="id" column="id"/>
+        <collection property="deliverBeanList" ofType="com.wyj.quansystem.bean.DeliverBean">
+            <id property="id" column="deliver_id"/>
+            <result property="deliverStatus" column="deliverStatus"/>
+            <association property="cvBean" javaType="com.wyj.quansystem.bean.CVBean">
+                <id property="id" column="cv_id"/>
+                <result property="cvName" column="cvName"/>
+                <association property="interviewBean" javaType="com.wyj.quansystem.bean.InterviewBean">
+                    <id property="id" column="interview_id"/>
+                    <result property="interviewTime" column="interviewTime"/>
+                    <association property="jobBean" javaType="com.wyj.quansystem.bean.JobBean">
+                        <id property="id" column="job_id"/>
+                        <result property="jobName" column="jobName"/>
+                    </association>
+                </association>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="queryCompany" resultType="com.wyj.quansystem.bean.CompanyBean">
+        select * from company where id = #{id};
+    </select>
+
+    <select id="getInterview" resultMap="cvAndInterview">
+        select company.id, cvName, interviewTime, jobName from company left join
+        deliver on company.id = deliver.companyId left join
+        cv on deliver.cvId = cv.id left join
+        interview on cv.id = interview.cvId left join
+        job on interview.jobId = job.id where company.id = #{id} and deliverStatus = 1;
+    </select>
+</mapper>

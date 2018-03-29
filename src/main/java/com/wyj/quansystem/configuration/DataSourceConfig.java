@@ -12,7 +12,6 @@ import java.beans.PropertyVetoException;
  * 数据库连接池配置
  */
 @Configuration
-@MapperScan("com.wyj.quansystem.dao")
 public class DataSourceConfig {
 
     @Value("${spring.datasource.driver-class-name}")

@@ -23,6 +23,15 @@ public class JobBean {
     private int jobAppluNum;
     private String jobUpdateTime;
     private int jobStatus;
+    private InterviewBean interviewBean;
+
+    public InterviewBean getInterviewBean() {
+        return interviewBean;
+    }
+
+    public void setInterviewBean(InterviewBean interviewBean) {
+        this.interviewBean = interviewBean;
+    }
 
     public int getJobAppluNum() {
         return jobAppluNum;

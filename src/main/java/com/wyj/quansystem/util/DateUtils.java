@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Utils {
+public class DateUtils {
 
     /**
      * 字符串转换成日期
@@ -25,7 +25,7 @@ public class Utils {
     }
 
     /**
-     * 字符串转换成日期
+     * 日期转换成字符串
      * @param date
      * @return str
      */
@@ -33,10 +33,6 @@ public class Utils {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        String str;
-
-        str = format.format(date);
-
-        return str;
+        return format.format(date);
     }
 }

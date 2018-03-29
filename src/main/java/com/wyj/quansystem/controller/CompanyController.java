@@ -1,14 +1,21 @@
 package com.wyj.quansystem.controller;
 
 
+import com.wyj.quansystem.bean.CompanyBean;
 import com.wyj.quansystem.bean.JobBean;
+import com.wyj.quansystem.bean.ResultBean;
+import com.wyj.quansystem.bean.UserBean;
 import com.wyj.quansystem.service.CompanyService;
 import com.wyj.quansystem.service.JobService;
+import com.wyj.quansystem.util.ResultUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,6 +26,7 @@ import java.util.Map;
 @RequestMapping("/companyController")
 public class CompanyController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
     @Autowired
     private CompanyService companyService;
@@ -40,8 +48,13 @@ public class CompanyController {
         }
 
         return resultMap;
+    }
 
-
-
+    @GetMapping(value = "getInterview")
+    public ResultBean<CompanyBean> getInterview(HttpServletRequest request){
+        Integer companyId = (Integer) request.getSession().getAttribute("id");
+        logger.info(companyId+"");
+        ResultBean<CompanyBean> resultBean = ResultUtils.success(companyService.getInterview(companyId));
+        return resultBean;
     }
 }

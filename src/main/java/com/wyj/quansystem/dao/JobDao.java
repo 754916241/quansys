@@ -1,6 +1,7 @@
 package com.wyj.quansystem.dao;
 
 import com.wyj.quansystem.bean.JobBean;
+import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public interface JobDao {
      * 修改职位
      */
     int updateJob(JobBean jobBean);
+
 
     /**
      * 根据id修改状态

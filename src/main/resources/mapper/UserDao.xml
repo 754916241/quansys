@@ -5,7 +5,29 @@
 
 
 <mapper namespace="com.wyj.quansystem.dao.UserDao">
-    <select id="queryUser" resultType="com.wyj.quansystem.bean.UserBean" parameterType="com.wyj.quansystem.bean.UserBean">
+
+    <resultMap type="com.wyj.quansystem.bean.UserBean" id="userResultMap">
+        <id property="id" column="id"/>
+        <result property="userType" column="userType"/>
+        <association  property="company" javaType="com.wyj.quansystem.bean.CompanyBean" >
+            <id property="id" column="c_id"/>
+            <result property="companyName" column="companyName"/>
+            <result property="companyIntroduction" column="companyIntroduction"/>
+            <result property="companyEmail" column="companyEmail"/>
+        </association>
+    </resultMap>
+
+    <select id="login" resultType="com.wyj.quansystem.bean.UserBean" parameterType="com.wyj.quansystem.bean.UserBean">
         select * from user where username = #{username} and password = #{password};
+    </select>
+
+    <!--  -->
+    <select id="query" resultMap="userResultMap" parameterType="com.wyj.quansystem.bean.UserBean">
+        select u.*,c.id as c_id, c.* from user u left join company c on u.id = c.id
+        where u.username like  '%${username}%' and u.password = #{password};
+    </select>
+
+    <select id="queryUser" resultType="com.wyj.quansystem.bean.UserBean" parameterType="com.wyj.quansystem.bean.UserBean">
+        select * from user where username = #{username};
     </select>
 </mapper>

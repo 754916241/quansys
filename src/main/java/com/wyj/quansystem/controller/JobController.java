@@ -1,7 +1,10 @@
 package com.wyj.quansystem.controller;
 
 import com.wyj.quansystem.bean.JobBean;
+import com.wyj.quansystem.bean.ResultBean;
+import com.wyj.quansystem.exception.ResultException;
 import com.wyj.quansystem.service.JobService;
+import com.wyj.quansystem.util.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * controller与responseBody的结合
@@ -38,11 +43,11 @@ public class JobController {
     }
 
     @RequestMapping(value="getJob", method = RequestMethod.GET)
-    public Map<String, Object> getJobList(int jobStatus){
-        Map<String, Object> resultMap = new HashMap<>();
+    public ResultBean getJobList(int jobStatus) throws Exception {
+        /* Map<String, Object> resultMap = new HashMap<>();*/
         List<JobBean> jobList = jobService.getJobList(jobStatus);
-        resultMap.put("jobData", jobList);
-        return resultMap;
+        ResultBean<List<JobBean>> resultBean = ResultUtils.success(jobList);
+        return resultBean;
     }
 
     @RequestMapping(value="getJobDetail", method = RequestMethod.GET)
@@ -69,5 +74,7 @@ public class JobController {
         }
         return resultMap;
     }
+
+
 
 }

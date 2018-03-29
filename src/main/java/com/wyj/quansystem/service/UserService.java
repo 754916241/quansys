@@ -7,4 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService {
 
     UserBean login(UserBean userBean);
+
+    UserBean query(UserBean userBean);
+
+
 }

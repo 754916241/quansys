@@ -1,22 +1,19 @@
 package com.wyj.quansystem.service.impl;
 
 
-import com.wyj.quansystem.bean.JobBean;
+import com.wyj.quansystem.bean.CompanyBean;
 import com.wyj.quansystem.dao.CompanyDao;
-import com.wyj.quansystem.dao.JobDao;
+import com.wyj.quansystem.enums.ResultEnum;
+import com.wyj.quansystem.exception.ResultException;
 import com.wyj.quansystem.service.CompanyService;
-import com.wyj.quansystem.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 
 @Service
 public class CompanyServiceImpl implements CompanyService{
@@ -42,5 +39,14 @@ public class CompanyServiceImpl implements CompanyService{
         }
 
         return false;
+    }
+
+    @Override
+    public CompanyBean getInterview(int companyId) {
+        if(companyDao.getInterview(companyId) != null){
+            return companyDao.getInterview(companyId);
+        }else{
+            throw new ResultException(ResultEnum.FailOne);
+        }
     }
 }

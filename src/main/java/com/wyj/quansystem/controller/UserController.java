@@ -1,57 +1,57 @@
 package com.wyj.quansystem.controller;
 
+import com.wyj.quansystem.bean.ResultBean;
 import com.wyj.quansystem.bean.UserBean;
 import com.wyj.quansystem.service.UserService;
+import com.wyj.quansystem.util.ResultUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/userController")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value="login", method = RequestMethod.POST)
-    public Map<String, Object> login(@RequestBody UserBean user, HttpServletRequest request){
-        Map<String, Object> resultMap = new HashMap<>();
-        if(userService.login(user) != null){
-            request.getSession().setAttribute("id", user.getId());
-            System.out.println(request.getSession().getId());
-            resultMap.put("status", 0);
-            resultMap.put("userType", userService.login(user).getUserType());
-        }else{
-            resultMap.put("status", 1);
-        }
-        return resultMap;
+    @PostMapping(value="login")
+    public ResultBean login(@RequestBody UserBean user, HttpServletRequest request){
+        ResultBean<UserBean> resultBean = ResultUtils.success(userService.login(user));
+        request.getSession().setAttribute("id", userService.login(user).getId());
+        request.getSession().setAttribute("userType", userService.login(user).getUserType());
+        return resultBean;
     }
 
-    @RequestMapping(value="isLogin1", method = RequestMethod.GET)
-    public Map<String, Object> isLogin1(HttpServletRequest request){
-        Map<String, Object> resultMap = new HashMap<>();
-        Integer id  = (Integer) request.getSession().getAttribute("id");
-        System.out.println(request.getSession().getAttributeNames().nextElement());
-        if(id != null){
-            resultMap.put("status", 200);
-        }else{
-            resultMap.put("status", 400);
-        }
-        return resultMap;
+    @RequestMapping(value="isManager", method = RequestMethod.GET)
+    public boolean isManager(HttpServletRequest request){
+        String userType  = (String) request.getSession().getAttribute("userType");
+
+        return userType != null && "admin".equals(userType);
+
     }
 
-    @RequestMapping(value="isLogin", method = RequestMethod.GET)
+    @GetMapping(value="isLogin")
     public boolean isLogin(HttpServletRequest request){
 
         Integer id  = (Integer) request.getSession().getAttribute("id");
-        System.out.println(request.getSession().getAttributeNames().hasMoreElements());
+        logger.info(id+"");
         return id != null;
+    }
+
+    @RequestMapping(value="query", method = RequestMethod.POST)
+    public Map<String, Object> query(@RequestBody UserBean user){
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("data", userService.query(user));
+        return resultMap;
     }
 
 

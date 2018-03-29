@@ -4,6 +4,7 @@ public class UserBean {
 
     private String username, password, userType;
     private int id;
+    private CompanyBean company;
 
     public String getUsername() {
         return username;
@@ -35,5 +36,13 @@ public class UserBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public CompanyBean getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyBean company) {
+        this.company = company;
     }
 }
