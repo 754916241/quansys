@@ -24,8 +24,9 @@ public class TestJob extends QuansystemApplicationTests{
 
     @Test
     public void testJobList() throws Exception {
-        List<JobBean> list = service.getJobList(3);
+        List<JobBean> list = service.getJobList(3, null);
         Assert.assertEquals(0, list.size());
+
     }
 
     @Test

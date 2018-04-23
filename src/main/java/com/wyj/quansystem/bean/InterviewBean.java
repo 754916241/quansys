@@ -1,7 +1,10 @@
 package com.wyj.quansystem.bean;
 
-public class InterviewBean {
+import java.io.Serializable;
 
+public class InterviewBean implements Serializable{
+
+    private static final long serialVersionUID = -7844845818589769483L;
     private int id;
     private String interviewTime;
     private CVBean cvBean;

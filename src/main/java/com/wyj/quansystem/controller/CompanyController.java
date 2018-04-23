@@ -5,12 +5,20 @@ import com.wyj.quansystem.bean.CompanyBean;
 import com.wyj.quansystem.bean.JobBean;
 import com.wyj.quansystem.bean.ResultBean;
 import com.wyj.quansystem.bean.UserBean;
+import com.wyj.quansystem.component.RedisComponent;
+import com.wyj.quansystem.enums.ResultEnum;
+import com.wyj.quansystem.exception.ResultException;
 import com.wyj.quansystem.service.CompanyService;
 import com.wyj.quansystem.service.JobService;
+import com.wyj.quansystem.util.Constant;
+import com.wyj.quansystem.util.CookieUtils;
 import com.wyj.quansystem.util.ResultUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +32,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/companyController")
+@Slf4j
 public class CompanyController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private RedisComponent redisComponent;
 
     @PostMapping(value="uploadImage")
     public Map<String, Object> acceptImage(@RequestParam MultipartFile file, HttpServletRequest request){
@@ -46,15 +56,16 @@ public class CompanyController {
             resultMap.put("status", 400);
             resultMap.put("msg", e.getMessage());
         }
-
         return resultMap;
     }
 
+
     @GetMapping(value = "getInterview")
+    @Cacheable(cacheNames = "interviewCache", key = "#root.caches[0].name")
     public ResultBean<CompanyBean> getInterview(HttpServletRequest request){
-        Integer companyId = (Integer) request.getSession().getAttribute("id");
-        logger.info(companyId+"");
-        ResultBean<CompanyBean> resultBean = ResultUtils.success(companyService.getInterview(companyId));
-        return resultBean;
+        //Integer companyId = (Integer) request.getSession().getAttribute("id");
+        Integer companyId = redisComponent.getIdFromToken(request);
+        return ResultUtils.success(companyService.getInterview(companyId));
+
     }
 }

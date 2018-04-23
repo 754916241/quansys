@@ -1,7 +1,10 @@
 package com.wyj.quansystem.bean;
 
-public class ResultBean<T> {
+import java.io.Serializable;
 
+public class ResultBean<T> implements Serializable{
+
+    private static final long serialVersionUID = -1316838284584058085L;
     private Integer code;
     private String msg;
     private T data;

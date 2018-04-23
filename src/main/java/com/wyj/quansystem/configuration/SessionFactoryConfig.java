@@ -10,14 +10,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.io.IOException;
 
 /**
  * 绑定mybatis
  */
-@Configuration
-@MapperScan("com.wyj.quansystem.dao")
+// @Configuration
+// @MapperScan("com.wyj.quansystem.dao")
 public class SessionFactoryConfig {
 
     @Value("${mybatis_config_file}")
@@ -28,6 +29,7 @@ public class SessionFactoryConfig {
     private String beanPackage;
     @Autowired
     @Qualifier("dataSource")
+    // @Resource(name = "dataSource")
     private DataSource dataSource;
 
     @Bean("sqlSessionFactory")
@@ -36,6 +38,7 @@ public class SessionFactoryConfig {
         sqlSessionFactoryBean.setConfigLocation(new ClassPathResource(myBatilsPath));
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         String packagePath = PathMatchingResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + mapperPath;
+        // SqlSessionFac
         try {
             sqlSessionFactoryBean.setMapperLocations(resolver.getResources(packagePath));
         } catch (IOException e) {

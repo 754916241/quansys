@@ -2,10 +2,12 @@ package com.wyj.quansystem.bean;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class JobBean {
+public class JobBean implements Serializable{
 
+    private static final long serialVersionUID = -7106977578045418760L;
     private int id;
     private String jobName;
     private String jobCatagory;
@@ -23,6 +25,7 @@ public class JobBean {
     private int jobAppluNum;
     private String jobUpdateTime;
     private int jobStatus;
+    private int companyId;
     private InterviewBean interviewBean;
 
     public InterviewBean getInterviewBean() {
@@ -167,5 +170,13 @@ public class JobBean {
 
     public void setJobExperience(String jobExperience) {
         this.jobExperience = jobExperience;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }

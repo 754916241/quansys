@@ -1,7 +1,10 @@
 package com.wyj.quansystem.bean;
 
-public class UserBean {
+import java.io.Serializable;
 
+public class UserBean implements Serializable{
+
+    private static final long serialVersionUID = 4116963110577399657L;
     private String username, password, userType;
     private int id;
     private CompanyBean company;

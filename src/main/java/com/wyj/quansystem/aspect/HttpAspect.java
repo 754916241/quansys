@@ -14,8 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 public class HttpAspect {
 
-    @Pointcut("execution(public * com.wyj.quansystem.controller.UserController.clone(..))")
+    @Pointcut("execution(public * com.wyj.quansystem.controller.JobController.*(..))")
     public void log(){
+
+    }
+
+    @Pointcut("within(com.wyj.quansystem.controller.JobController && com.wyj.quansystem.controller.CompanyController)")
+    public void within(){
 
     }
 

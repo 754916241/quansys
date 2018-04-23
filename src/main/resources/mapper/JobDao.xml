@@ -3,12 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- ?????? -->
-<!--???????? -->
 <mapper namespace="com.wyj.quansystem.dao.JobDao">
 
     <select id="queryAllJob" resultType="com.wyj.quansystem.bean.JobBean">
-        select * from job j where jobStatus = #{jobStatus} order by j.jobUpdateTime Desc;
+        select * from job j where jobStatus = #{arg0} and companyId = #{arg1} order by j.jobUpdateTime Desc;
     </select>
 
     <select id="queryJobById" resultType="com.wyj.quansystem.bean.JobBean">
@@ -37,4 +35,8 @@
     <delete id="deleteJob">
         delete from job where id = #{id}
     </delete>
+
+    <select id="queryAll" resultType="com.wyj.quansystem.bean.JobBean">
+        select * from job j where jobStatus = #{jobStatus} order by j.jobUpdateTime Desc
+    </select>
 </mapper>

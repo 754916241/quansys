@@ -4,6 +4,7 @@ import com.wyj.quansystem.bean.ResultBean;
 import com.wyj.quansystem.enums.ResultEnum;
 import com.wyj.quansystem.exception.ResultException;
 import com.wyj.quansystem.util.ResultUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,7 +27,8 @@ public class MyExceptionHandler {
             return ResultUtils.error(exception.getCode(), exception.getMessage());
         }
         else{
-            logger.error(e.getMessage());
+            e.printStackTrace();
+            //logger.error(e.getMessage());
             return ResultUtils.error(ResultEnum.Error.getCode(), e.getMessage());
         }
 

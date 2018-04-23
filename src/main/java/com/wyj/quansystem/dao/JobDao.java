@@ -1,7 +1,8 @@
 package com.wyj.quansystem.dao;
 
+import com.github.pagehelper.Page;
 import com.wyj.quansystem.bean.JobBean;
-import org.apache.ibatis.session.SqlSession;
+
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface JobDao {
     /**
      * 查询出同一个状态的工作职位
      */
-    List<JobBean> queryAllJob(int status);
+    List<JobBean> queryAllJob(int status, int companyId);
 
     /**
      * 根据id查询工作职位
@@ -32,9 +33,15 @@ public interface JobDao {
      */
     int updateJob(JobBean jobBean);
 
-
     /**
      * 根据id修改状态
      */
     int updateJobStatus(int jobId, int jobStatus, String jobUpdateTime);
+
+    /**
+     * 分页查询
+     * @param status
+     * @return
+     */
+    Page<JobBean> queryAll(int status);
 }

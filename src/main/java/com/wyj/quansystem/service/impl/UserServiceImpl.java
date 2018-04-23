@@ -36,10 +36,10 @@ public class UserServiceImpl implements UserService {
                 }
                 return user;
             }else{
-                throw new ResultException(ResultEnum.LoginFail2);
+                throw new ResultException(ResultEnum.PasswordError);
             }
         }else{
-            throw new ResultException(ResultEnum.LoginFail1);
+            throw new ResultException(ResultEnum.UserNotExist);
         }
     }
 

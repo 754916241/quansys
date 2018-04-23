@@ -1,7 +1,10 @@
 package com.wyj.quansystem.bean;
 
-public class DeliverBean {
+import java.io.Serializable;
 
+public class DeliverBean implements Serializable{
+
+    private static final long serialVersionUID = -3478445539271203431L;
     private int id;
     private String deliverTime;
     private String deliverStatus;
