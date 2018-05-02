@@ -24,6 +24,7 @@ public class MyExceptionHandler {
     public ResultBean handle(Exception e){
         if(e instanceof ResultException){
             ResultException exception = (ResultException) e;
+            logger.error(exception.getMessage());
             return ResultUtils.error(exception.getCode(), exception.getMessage());
         }
         else{

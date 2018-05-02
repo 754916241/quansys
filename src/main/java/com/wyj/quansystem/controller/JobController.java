@@ -2,8 +2,10 @@ package com.wyj.quansystem.controller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import com.wyj.quansystem.annotation.TokenValue;
 import com.wyj.quansystem.bean.JobBean;
 import com.wyj.quansystem.bean.ResultBean;
+import com.wyj.quansystem.component.RedisComponent;
 import com.wyj.quansystem.exception.ResultException;
 import com.wyj.quansystem.service.JobService;
 import com.wyj.quansystem.util.Constant;
@@ -33,57 +35,38 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
-    @RequestMapping(value="addJob", method = RequestMethod.POST)
-    // @Cacheable(cacheNames = "job", key = "123")
-    public ResultBean addJob(@RequestBody JobBean job){
+    @Autowired
+    private RedisComponent redisComponent;
+
+    @PostMapping(value="addJob")
+    public ResultBean addJob(@RequestBody JobBean job, @TokenValue String token){
+        int companyId = redisComponent.getIdFromToken(token);
+        job.setCompanyId(companyId);
         if(jobService.insertJob(job)){
             return ResultUtils.success();
         }
         return ResultUtils.error();
     }
 
-    @RequestMapping(value="getJob", method = RequestMethod.GET)
-    public ResultBean<List<JobBean>> getJobList(int jobStatus, HttpServletRequest request) throws Exception {
-        String token = CookieUtils.getCookieValue(request, Constant.token);
-        /* Map<String, Object> resultMap = new HashMap<>();*/
-        List<JobBean> jobList = jobService.getJobList(jobStatus, token);
-        return ResultUtils.success(jobList);
-    }
-
-    @RequestMapping(value="getJobPage", method = RequestMethod.GET)
-    public ResultBean getJobPage(int jobStatus, int page, int pageSize) throws Exception {
+    @GetMapping(value="getJobPage")
+    public ResultBean getJobPage(int jobStatus, int page, int pageSize, @TokenValue String token){
+        log.info(token);
+        int companyId = redisComponent.getIdFromToken(token);
         //其实这个page继承自ArrayList
-        Page<JobBean> jobList = jobService.getJobPage(jobStatus, page, pageSize);
+        Page<JobBean> jobList = jobService.getJobPage(jobStatus, page, pageSize, companyId);
         PageInfo<JobBean> pageInfo = new PageInfo<>(jobList);
-        ResultBean<PageInfo<JobBean>> resultBean = ResultUtils.success(pageInfo);
-        return resultBean;
+        return ResultUtils.success(pageInfo);
     }
 
-    @RequestMapping(value="getJobDetail", method = RequestMethod.GET)
-    public Map<String, Object> getJobDetail(int id){
-        Map<String, Object> resultMap = new HashMap<>();
-        try {
-            JobBean JobBean = jobService.getJobDetail(id);
-            resultMap.put("job", JobBean);
-            resultMap.put("status", 200);
-        } catch (Exception e) {
-            resultMap.put("status", 400);
-        }
-        return resultMap;
+    @GetMapping(value="getJobDetail")
+    public ResultBean getJobDetail(int id){
+        JobBean JobBean = jobService.getJobDetail(id);
+        return ResultUtils.success(JobBean);
     }
 
-    @RequestMapping(value="changeJobStatus", method = RequestMethod.POST)
-    public Map<String, Object> changeJobStatus(@RequestBody JobBean job){
-        Map<String, Object> resultMap = new HashMap<>();
-        int status = job.getJobStatus();
-        if(jobService.updateJobStatus(job.getId(), status)){
-            resultMap.put("status", 200);
-        }else{
-            resultMap.put("status", 400);
-        }
-        return resultMap;
+    @PostMapping(value="changeJobStatus")
+    public ResultBean changeJob(@RequestBody JobBean job){
+        jobService.updateJobStatus(job.getId(), job.getJobStatus());
+        return ResultUtils.success();
     }
-
-
-
 }

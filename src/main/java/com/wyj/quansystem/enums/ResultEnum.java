@@ -9,7 +9,7 @@ public enum ResultEnum {
     FailTwo(102, "数据库中不存在该信息"),
     DataBaseError(103, "数据库错误"),
     LoginTimeOut(104, "已超时，请重新登录"),
-    FailOne(105, "前台请求数据有误"),
+    RedisError(105, "缓存数据有误，请稍后重试"),
     ;
 
     ResultEnum(Integer code, String msg) {

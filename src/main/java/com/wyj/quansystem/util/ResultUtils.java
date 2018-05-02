@@ -2,8 +2,10 @@ package com.wyj.quansystem.util;
 
 import com.wyj.quansystem.bean.ResultBean;
 import com.wyj.quansystem.enums.ResultEnum;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Controller;
 
 public class ResultUtils {
 
@@ -14,8 +16,6 @@ public class ResultUtils {
         bean.setData(data);
         return bean;
     }
-
-    //StringRedisTemplate
 
     public static ResultBean success(){
         return success(null);

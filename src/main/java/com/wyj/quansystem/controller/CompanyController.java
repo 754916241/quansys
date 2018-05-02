@@ -62,9 +62,9 @@ public class CompanyController {
 
     @GetMapping(value = "getInterview")
     @Cacheable(cacheNames = "interviewCache", key = "#root.caches[0].name")
-    public ResultBean<CompanyBean> getInterview(HttpServletRequest request){
+    public ResultBean<CompanyBean> getInterview(@CookieValue("token")String token){
         //Integer companyId = (Integer) request.getSession().getAttribute("id");
-        Integer companyId = redisComponent.getIdFromToken(request);
+        Integer companyId = redisComponent.getIdFromToken(token);
         return ResultUtils.success(companyService.getInterview(companyId));
 
     }

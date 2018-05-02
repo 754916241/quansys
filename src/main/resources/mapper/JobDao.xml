@@ -15,9 +15,9 @@
 
     <insert id="insertJob" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.wyj.quansystem.bean.JobBean">
         insert into job(jobName, jobCatagory, jobCity, jobInducement, jobDescription, jobAddress, jobProperty
-            ,jobDegree, jobEmail, jobExperience, jobPeopleNumber, jobLowSalary, jobHighSalary, jobUpdateTime, jobApplyNum)
+            ,jobDegree, jobEmail, jobExperience, jobPeopleNumber, jobLowSalary, jobHighSalary, jobUpdateTime, jobApplyNum, companyId)
             values (#{jobName}, #{jobCatagory}, #{jobCity}, #{jobInducement}, #{jobDescription}, #{jobAddress}, #{jobProperty}
-            ,#{jobDegree}, #{jobEmail}, #{jobExperience}, #{jobPeopleNumber}, #{jobLowSalary},#{jobHighSalary}, #{jobUpdateTime}, 0)
+            ,#{jobDegree}, #{jobEmail}, #{jobExperience}, #{jobPeopleNumber}, #{jobLowSalary},#{jobHighSalary}, #{jobUpdateTime}, 0, #{companyId})
     </insert>
 
     <update id="updateJob" parameterType="com.wyj.quansystem.bean.JobBean">
@@ -37,6 +37,6 @@
     </delete>
 
     <select id="queryAll" resultType="com.wyj.quansystem.bean.JobBean">
-        select * from job j where jobStatus = #{jobStatus} order by j.jobUpdateTime Desc
+        select * from job j where jobStatus = #{arg0} and companyId = #{arg1} order by j.jobUpdateTime Desc
     </select>
 </mapper>

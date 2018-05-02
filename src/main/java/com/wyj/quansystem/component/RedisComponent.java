@@ -1,23 +1,31 @@
 package com.wyj.quansystem.component;
 
 import com.mysql.jdbc.StringUtils;
+import com.wyj.quansystem.bean.UserBean;
+import com.wyj.quansystem.enums.ResultEnum;
+import com.wyj.quansystem.exception.ResultException;
 import com.wyj.quansystem.util.Constant;
 import com.wyj.quansystem.util.CookieUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 
 @Component
+@Slf4j
 public class RedisComponent {
 
-    private static final Logger log = LoggerFactory.getLogger(RedisComponent.class);
-
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RedisTemplate<String, UserBean> redisTemplate;
 
     /**
      *
@@ -27,11 +35,11 @@ public class RedisComponent {
      */
     public boolean lock(String key, String value){
         //若key对应的value不存在，则设置value并返回true，若存在，则返回false
-       if(redisTemplate.opsForValue().setIfAbsent(key, value)){
+       if(stringRedisTemplate.opsForValue().setIfAbsent(key, value)){
            return true;
        }
 
-       String currentValue = redisTemplate.opsForValue().get(key);
+       String currentValue = stringRedisTemplate.opsForValue().get(key);
        //判断当前锁是否过期
         if(!StringUtils.isNullOrEmpty(currentValue) &&
                 Long.parseLong(currentValue) < System.currentTimeMillis()){
@@ -44,7 +52,7 @@ public class RedisComponent {
              * 锁住，加锁失败。
              * 想的真j8对！
              */
-            String oldValue = redisTemplate.opsForValue().getAndSet(key, value);
+            String oldValue = stringRedisTemplate.opsForValue().getAndSet(key, value);
             if(!StringUtils.isNullOrEmpty(currentValue) && oldValue.equals(currentValue)){
                 return true;
             }
@@ -54,26 +62,26 @@ public class RedisComponent {
     }
 
     public void unLock(String key, String value){
-        String currentValue = redisTemplate.opsForValue().get(key);
+        String currentValue = stringRedisTemplate.opsForValue().get(key);
         try {
             if(!StringUtils.isNullOrEmpty(currentValue) && currentValue.equals(value)){
-                redisTemplate.opsForValue().getOperations().delete(key);
+                stringRedisTemplate.opsForValue().getOperations().delete(key);
             }
         } catch (Exception e) {
             log.error("redis分布式锁解锁异常， {}", e);
         }
     }
 
-    public Integer getIdFromToken(HttpServletRequest request){
-        /*Cookie cookie = CookieUtils.getCookie(request, Constant.token);
-        if(cookie != null){
-            String id = redisTemplate.opsForValue().get(cookie.getValue());
-            if(id != null){
-                return Integer.valueOf(id);
-            }
-            return null;
+    public Integer getIdFromRequest(HttpServletRequest request){
+        String token = CookieUtils.getCookieValue(request, Constant.token);
+        return getIdFromToken(token);
+    }
+
+    public Integer getIdFromToken(String token){
+        UserBean userBean = redisTemplate.opsForValue().get(token);
+        if(userBean == null){
+            throw new ResultException(ResultEnum.RedisError);
         }
-        return null;*/
-        return Integer.valueOf(redisTemplate.opsForValue().get(CookieUtils.getCookie(request, Constant.token).getValue()));
+        return userBean.getId();
     }
 }

@@ -30,7 +30,6 @@ public class TokenAspect {
 
     @Before("valid()")
     public void hasToken(){
-        log.info("controller before");
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String token = CookieUtils.getCookieValue(request, Constant.token);

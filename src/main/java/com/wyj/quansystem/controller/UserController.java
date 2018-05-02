@@ -1,5 +1,6 @@
 package com.wyj.quansystem.controller;
 
+import com.wyj.quansystem.annotation.TokenValue;
 import com.wyj.quansystem.bean.ResultBean;
 import com.wyj.quansystem.bean.UserBean;
 import com.wyj.quansystem.service.UserService;
@@ -10,9 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +34,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    @Resource
+    private RedisTemplate<String, UserBean> redisTemplate;
 
     @PostMapping(value="login")
     public ResultBean login(@RequestBody UserBean user, HttpServletResponse response){
@@ -43,43 +46,36 @@ public class UserController {
 
         String token = UUID.randomUUID().toString();
         // 设置token与userType至redis
-        redisTemplate.opsForValue().set(token, result.getId()+"", expire, TimeUnit.SECONDS);
-        redisTemplate.opsForValue().set("userType", result.getUserType(), expire, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token, new UserBean(result.getId(), result.getUserType()), expire, TimeUnit.SECONDS);
         //设置token到cookie
         CookieUtils.setCookie(response, Constant.token, token, expire);
         return resultBean;
     }
 
-    @RequestMapping(value="isManager", method = RequestMethod.GET)
-    public boolean isManager(HttpServletRequest request){
+    @GetMapping(value="isManager")
+    public boolean isManager(@TokenValue String token){
         // redis中存在token并且userType为admin
-        return isLogin(request) && ("admin").equals(redisTemplate.opsForValue().get("userType"));
+        if(isLogin(token)){
+           String userType = redisTemplate.opsForValue().get(token).getUserType();
+           return "admin".equals(userType);
+        }
+        return false;
     }
 
     @GetMapping(value="isLogin")
-    public boolean isLogin(HttpServletRequest request){
-        Cookie cookie = CookieUtils.getCookie(request, Constant.token);
-        // Integer id  = (Integer) request.getSession().getAttribute("id");
-        if(cookie != null){
-            String id = redisTemplate.opsForValue().get(cookie.getValue());
+    public boolean isLogin(@TokenValue String token){
+        if(token != null){
+            Integer id = redisTemplate.opsForValue().get(token).getId();
             return id != null;
         }
         return false;
     }
 
-    /*@RequestMapping(value="query", method = RequestMethod.POST)
-    public Map<String, Object> query(@RequestBody UserBean user){
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("data", userService.query(user));
-        return resultMap;
-    }*/
-
     @GetMapping(value="logout")
-    public ResultBean logout(HttpServletRequest request, HttpServletResponse response){
-        Cookie cookie = CookieUtils.getCookie(request, Constant.token);
+    public ResultBean logout(@TokenValue String token, HttpServletResponse response){  // @CookieValue("token") String token
         //将token清除出redis以及cookie
-        if(cookie != null){
-            redisTemplate.opsForValue().getOperations().delete(cookie.getValue());
+        if(token != null){
+            redisTemplate.opsForValue().getOperations().delete(token);
             CookieUtils.setCookie(response, Constant.token, null, 0);
         }
         return ResultUtils.success();

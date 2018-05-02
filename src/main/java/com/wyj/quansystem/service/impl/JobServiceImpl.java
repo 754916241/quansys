@@ -28,7 +28,6 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Transactional
     @Override
     public boolean insertJob(JobBean job) {
         //处理高并发情况下的分布式数据不同步问题   redis分布锁
@@ -42,22 +41,13 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    // @Cacheable(condition = "#status > 3", unless = )
-    public List<JobBean> getJobList(int status, String token){
-        if(token != null){
-            int companyId = Integer.valueOf(redisTemplate.opsForValue().get("token"));
-            return jobDao.queryAllJob(status, companyId);
-        }else{
-            throw new ResultException(ResultEnum.LoginTimeOut);
-        }
-    }
-
-
-
-    @Override
     public boolean updateJobStatus(int jobId, int jobStatus) {
         int num = jobDao.updateJobStatus(jobId, jobStatus, DateUtils.date2Str(new Date()));
-        return num > 0;
+        if(num > 0){
+            return true;
+        }else{
+            throw new ResultException(ResultEnum.DataBaseError);
+        }
     }
 
     @Override
@@ -66,9 +56,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Page<JobBean> getJobPage(int status, int pageNum, int pageSize) {
+    public Page<JobBean> getJobPage(int status, int pageNum, int pageSize, int companyId) {
         PageHelper.startPage(pageNum, pageSize);
-        Page<JobBean> job = jobDao.queryAll(status);
-        return job;
+        return jobDao.queryAll(status, companyId);
     }
 }

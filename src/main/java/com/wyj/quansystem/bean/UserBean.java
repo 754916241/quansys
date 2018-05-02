@@ -9,6 +9,14 @@ public class UserBean implements Serializable{
     private int id;
     private CompanyBean company;
 
+    public UserBean() {
+    }
+
+    public UserBean(int id, String userType) {
+        this.userType = userType;
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }

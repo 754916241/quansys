@@ -8,10 +8,6 @@ import java.util.List;
 
 public interface JobDao {
 
-    /**
-     * 查询出同一个状态的工作职位
-     */
-    List<JobBean> queryAllJob(int status, int companyId);
 
     /**
      * 根据id查询工作职位
@@ -43,5 +39,5 @@ public interface JobDao {
      * @param status
      * @return
      */
-    Page<JobBean> queryAll(int status);
+    Page<JobBean> queryAll(int status, int companyId);
 }

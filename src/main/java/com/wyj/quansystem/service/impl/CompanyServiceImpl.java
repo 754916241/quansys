@@ -43,10 +43,6 @@ public class CompanyServiceImpl implements CompanyService{
 
     @Override
     public CompanyBean getInterview(int companyId) {
-        if(companyDao.getInterview(companyId) != null){
-            return companyDao.getInterview(companyId);
-        }else{
-            throw new ResultException(ResultEnum.FailOne);
-        }
+        return companyDao.getInterview(companyId);
     }
 }
